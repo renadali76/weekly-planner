@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request
-from database import add_user
-from werkzeug.security import generate_password_hash
+from database import add_user, get_user_by_email
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 
@@ -9,8 +9,21 @@ app = Flask(__name__)
 def home():
     return render_template("home.html")
 
-@app.route("/login")
+@app.route("/login", methods = ["GET", "POST"])
 def login():
+
+    if request.method == "POST":
+        email = request.form['email']
+        password = request.form['password']
+        user = get_user_by_email(email)
+
+        if user is None:
+            return "Email not found"
+        if check_password_hash(user["password"], password):
+            return f"Welcome, {user['username']}!"
+        
+        return "Inccorect password."
+    
     return render_template("login.html")
 
 @app.route("/register" , methods = ["GET" , "POST"])
