@@ -32,5 +32,16 @@ def add_user(username, email, password):
     connection.commit()
     connection.close()
 
+def get_user_by_email(email):
+    connection = sqlite3.connect("planner.db")
+    connection.row_factory = sqlite3.Row
+    cursor = connection.cursor()
+
+    cursor.execute("SELECT * FROM users WHERE email =?" , (email,))
+
+    user = cursor.fetchone()
+    connection.close
+    return user
+
 if __name__ == "__main__":
     create_database()
