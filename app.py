@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, session, redirect , url_for
-from database import add_user, get_user_by_email, add_task, get_tasks
+from database import add_user, get_user_by_email, add_task, get_tasks, delete_task
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
@@ -41,33 +41,59 @@ def register():
         print(email)
         print(password)
         add_user(username, email, hashed_password)
-        return "Registration successful!"
+        return redirect(url_for("login"))
 
 
     return render_template("register.html")
 
 @app.route("/dashboard")
 def dashboard():
+
     if "user_id" not in session:
         return redirect(url_for("login"))
+
     tasks = get_tasks(session["user_id"])
-    
-    return render_template("dashboard.html" , username=session["username"], tasks = tasks)
+
+    return render_template(
+        "dashboard.html",
+        username=session["username"],
+        tasks=tasks
+    )
 
 @app.route("/add_task", methods=["GET", "POST"])
 def add_task_route():
+
     if "user_id" not in session:
         return redirect(url_for("login"))
-    if request.method =="POST":
+
+    if request.method == "POST":
+
         title = request.form["title"]
         description = request.form["description"]
         due_date = request.form["due_date"]
         priority = request.form["priority"]
 
         add_task(
-            title , description, due_date, priority, session["user_id"])
-        
+            title,
+            description,
+            due_date,
+            priority,
+            session["user_id"]
+        )
+
         return redirect(url_for("dashboard"))
+
     return render_template("add_task.html")
+    
+@app.route("/delete_task/<int:task_id>")
+def delete_task_route(task_id):
+
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    delete_task(task_id, session["user_id"])
+
+    return redirect(url_for("dashboard"))
+
 if __name__ == "__main__":
     app.run(debug=True)

@@ -1,12 +1,10 @@
 import sqlite3
 
 def create_database():
-    print("Starting database creation...")
-
     connection = sqlite3.connect("planner.db")
-
     cursor = connection.cursor()
 
+    # Create users table
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS users(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -16,19 +14,20 @@ def create_database():
         )
     """)
 
+    # Create tasks table
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS tasks(
-                   id INTEGER PRIMARY KEY AUTOINCREAMENT,
-                   title TEXT NOT NULL,
-                   description TEXT,
-                   due_date TEXT,
-                   priority TEXT,
-                   compelete INTEGER DEFAULT 0,
-                   user_id INTEGER NOT NULL,
-                   FOREIGN KEY (user_id) REFERENCES users(id)
-                   )
-                   
-                   """)
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            title TEXT NOT NULL,
+            description TEXT,
+            due_date TEXT,
+            priority TEXT,
+            status TEXT DEFAULT 'Not Started',
+            created_at TEXT,
+            user_id INTEGER NOT NULL,
+            FOREIGN KEY(user_id) REFERENCES users(id)
+        )
+    """)
 
     connection.commit()
     connection.close()
@@ -64,7 +63,7 @@ def add_task(title, description, due_date, priority, user_id):
     cursor.execute("""
         INSERT INTO tasks(
                    title, description , due_date, priority, user_id)
-                   VALUES (?, ?, ?)
+                   VALUES (?, ?, ?, ?, ?)
                    """,(
                        title, description, due_date, priority, user_id))
     connection.commit()
@@ -76,11 +75,20 @@ def get_tasks(user_id):
     connection.row_factory = sqlite3.Row
     cursor = connection.cursor()
 
-    cursor.execute("SELECT * FROM tasks WHERE user_id = ? ORDER BY due_date", (user_id))
+    cursor.execute("SELECT * FROM tasks WHERE user_id = ? ORDER BY due_date", (user_id,))
     tasks = cursor.fetchall()
     connection.close()
     return tasks
+def delete_task(task_id, user_id):
+    connection = sqlite3.connect("planner.db")
+    cursor = connection.cursor()
+    cursor.execute("""
+        DELETE FROM tasks
+        WHERE id = ? AND user_id = ?
+    """, (task_id, user_id))
 
+    connection.commit()
+    connection.close()
 
 if __name__ == "__main__":
     create_database()
