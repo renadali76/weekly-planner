@@ -16,6 +16,20 @@ def create_database():
         )
     """)
 
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS tasks(
+                   id INTEGER PRIMARY KEY AUTOINCREAMENT,
+                   title TEXT NOT NULL,
+                   description TEXT,
+                   due_date TEXT,
+                   priority TEXT,
+                   compelete INTEGER DEFAULT 0,
+                   user_id INTEGER NOT NULL,
+                   FOREIGN KEY (user_id) REFERENCES users(id)
+                   )
+                   
+                   """)
+
     connection.commit()
     connection.close()
 
