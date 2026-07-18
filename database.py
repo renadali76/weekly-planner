@@ -57,5 +57,30 @@ def get_user_by_email(email):
     connection.close
     return user
 
+def add_task(title, description, due_date, priority, user_id):
+    connection = sqlite3.connect("planner.db")
+    cursor = connection.cursor()
+
+    cursor.execute("""
+        INSERT INTO tasks(
+                   title, description , due_date, priority, user_id)
+                   VALUES (?, ?, ?)
+                   """,(
+                       title, description, due_date, priority, user_id))
+    connection.commit()
+    connection.close()
+
+
+def get_tasks(user_id):
+    connection = sqlite3.connect("planner.db")
+    connection.row_factory = sqlite3.Row
+    cursor = connection.cursor()
+
+    cursor.execute("SELECT * FROM tasks WHERE user_id = ? ORDER BY due_date", (user_id))
+    tasks = cursor.fetchall()
+    connection.close()
+    return tasks
+
+
 if __name__ == "__main__":
     create_database()
