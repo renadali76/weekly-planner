@@ -50,8 +50,9 @@ def register():
 def dashboard():
     if "user_id" not in session:
         return redirect(url_for("login"))
+    tasks = get_tasks(session["user_id"])
     
-    return render_template("dashboard.html" , username=session["username"])
+    return render_template("dashboard.html" , username=session["username"], tasks = tasks)
 
 @app.route("/add_task", methods=["GET", "POST"])
 def add_task_route():
