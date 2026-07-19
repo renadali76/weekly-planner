@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, session, redirect , url_for
-from database import add_user, get_user_by_email, add_task, get_tasks, delete_task, delete_task, get_task_by_id,update_task
+from database import add_user, get_user_by_email, add_task, get_tasks, delete_task, delete_task, get_task_by_id,update_task, complete_task
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
@@ -94,6 +94,35 @@ def delete_task_route(task_id):
     delete_task(task_id, session["user_id"])
 
     return redirect(url_for("dashboard"))
+
+@app.route("/edit_task/<int:task_id>", methods=["GET", "POST"])
+def edit_task(task_id):
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+    if request.method == "POST":
+        title = request.form["title"]
+        description = request.form["description"]
+        due_date = request.form["due_date"]
+        priority = request.form["priority"]
+
+        update_task(
+            task_id,
+            title,
+            description,
+            due_date,
+            priority,
+            session["user_id"]
+        )
+        return redirect(url_for("dashboard"))
+    task = get_task_by_id(task_id, session["user_id"])
+    return render_template("edit_task.html", task=task)
+
+@app.route("/complete_task/<int:task_id>")
+def complete_task_route(task_id):
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+    complete_task(task_id, session["user_id"])
+    return redirect (url_for("dashboard"))
 
 if __name__ == "__main__":
     app.run(debug=True)

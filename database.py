@@ -103,7 +103,7 @@ def get_task_by_id(task_id, user_id):
     return task
 
 def update_task(task_id, title, description, due_date, priority, user_id):
-    connection = sqlite3.connect()
+    connection = sqlite3.connect("planner.db")
     cursor = connection.cursor()
     cursor.execute("""
         UPDATE tasks
@@ -121,6 +121,17 @@ def update_task(task_id, title, description, due_date, priority, user_id):
         user_id
     ))
 
+    connection.commit()
+    connection.close()
+
+def complete_task(task_id, user_id):
+    connection = sqlite3.connect("planner.db")
+    cursor = connection.cursor()
+    cursor.execute("""
+        UPDATE tasks
+        SET status = 'Completed'
+        WHERE id = ? AND user_id = ?
+    """, (task_id, user_id))
     connection.commit()
     connection.close()
 
