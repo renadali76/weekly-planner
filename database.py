@@ -90,5 +90,39 @@ def delete_task(task_id, user_id):
     connection.commit()
     connection.close()
 
+def get_task_by_id(task_id, user_id):
+    connection = sqlite3.connect("planner.db")
+    connection.row_factory = sqlite3.Row
+    cursor = connection.cursor()
+
+    cursor.execute("SELECT * FROM tasks WHERE id =? AND user_id = ?", (task_id, user_id))
+
+    task = cursor.fetchone()
+    connection.close()
+
+    return task
+
+def update_task(task_id, title, description, due_date, priority, user_id):
+    connection = sqlite3.connect()
+    cursor = connection.cursor()
+    cursor.execute("""
+        UPDATE tasks
+        SET title = ?,
+            description = ?,
+            due_date = ?,
+            priority = ?
+        WHERE id = ? AND user_id = ?
+    """, (
+        title,
+        description,
+        due_date,
+        priority,
+        task_id,
+        user_id
+    ))
+
+    connection.commit()
+    connection.close()
+
 if __name__ == "__main__":
     create_database()
