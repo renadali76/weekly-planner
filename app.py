@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, session, redirect , url_for
-from database import add_user, get_user_by_email, add_task, get_tasks, delete_task
+from database import add_user, get_user_by_email, add_task, get_tasks, delete_task, delete_task, get_task_by_id,update_task
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
