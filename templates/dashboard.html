@@ -4,41 +4,69 @@
 
 {% block content %}
 
-<h1>Welcome {{ username }}!</h1>
+<div class="dashboard">
 
-<a href="{{ url_for('add_task_route') }}">Add New Task</a>
+    <div class="dashboard-header">
 
-<hr>
+        <div>
+            <h1>📅 Weekly Planner</h1>
+            <p>Welcome back, {{ username }}!</p>
+        </div>
 
-{% for task in tasks %}
+        <a class="add-btn" href="{{ url_for('add_task_route') }}">
+            + Add New Task
+        </a>
 
-<h3>{{ task["title"] }}</h3>
+    </div>
 
-<p>{{ task["description"] }}</p>
+    {% if tasks %}
 
-<p>Due: {{ task["due_date"] }}</p>
+        {% for task in tasks %}
 
-<p>Priority: {{ task["priority"] }}</p>
+        <div class="task-card">
 
-<p>Status: {{ task["status"] }}</p>
+            <h2>{{ task["title"] }}</h2>
 
-<a href="{{ url_for('delete_task_route', task_id=task['id']) }}">
-    Delete
-</a>
+            <p>{{ task["description"] }}</p>
 
-<a href="{{ url_for('edit_task', task_id=task['id']) }}">
-    Edit
-</a>
+            <p><strong>Due:</strong> {{ task["due_date"] }}</p>
 
-<a href="{{ url_for('complete_task_route', task_id=task['id']) }}">
-    Complete
-</a>
-<hr>
+            <p>
+                <strong>Priority:</strong>
+                {{ task["priority"] }}
+            </p>
 
-{% else %}
+            <p>
+                <strong>Status:</strong>
+                {{ task["status"] }}
+            </p>
 
-<p>No tasks yet.</p>
+            <div class="task-buttons">
 
-{% endfor %}
+                <a href="{{ url_for('complete_task_route', task_id=task['id']) }}">
+                    ✓ Complete
+                </a>
+
+                <a href="{{ url_for('edit_task', task_id=task['id']) }}">
+                    ✏ Edit
+                </a>
+
+                <a href="{{ url_for('delete_task_route', task_id=task['id']) }}">
+                    🗑 Delete
+                </a>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <p>No tasks yet. Create your first task!</p>
+
+    {% endif %}
+
+</div>
 
 {% endblock %}
