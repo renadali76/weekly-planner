@@ -135,5 +135,38 @@ def complete_task(task_id, user_id):
     connection.commit()
     connection.close()
 
+def get_total_tasks(user_id):
+    connection = sqlite3.connect("planner.db")
+    cursor = connection.cursor()
+
+    cursor.execute("""
+        SELECT COUNT(*)
+        FROM tasks
+        WHERE user_id = ?
+    """, (user_id,))
+
+    total = cursor.fetchone()[0]
+
+    connection.close()
+
+    return total
+
+def get_completed_tasks(user_id):
+    connection = sqlite3.connect("planner.db")
+    cursor = connection.cursor()
+
+    cursor.execute("""
+        SELECT COUNT(*)
+        FROM tasks
+        WHERE user_id = ?
+        AND status = 'Completed'
+    """, (user_id,))
+
+    completed = cursor.fetchone()[0]
+
+    connection.close()
+
+    return completed
+
 if __name__ == "__main__":
     create_database()

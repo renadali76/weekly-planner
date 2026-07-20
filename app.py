@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, session, redirect , url_for
-from database import add_user, get_user_by_email, add_task, get_tasks, delete_task, delete_task, get_task_by_id,update_task, complete_task
+from database import add_user, get_user_by_email, add_task, get_tasks, delete_task, delete_task, get_task_by_id,update_task, complete_task, get_total_tasks, get_completed_tasks
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
@@ -49,16 +49,23 @@ def register():
 @app.route("/dashboard")
 def dashboard():
 
-    if "user_id" not in session:
-        return redirect(url_for("login"))
-
+    total = get_total_tasks(session["user_id"])
+    completed = get_completed_tasks(session["user_id"])
     tasks = get_tasks(session["user_id"])
+    progress = 0
+
+    if total > 0:
+        progress = int((completed / total) * 100)
+
 
     return render_template(
-        "dashboard.html",
-        username=session["username"],
-        tasks=tasks
-    )
+    "dashboard.html",
+    username=session["username"],
+    tasks=tasks,
+    total=total,
+    completed=completed,
+    progress=progress
+)
 
 @app.route("/add_task", methods=["GET", "POST"])
 def add_task_route():

@@ -12,13 +12,19 @@
     <body>
 
         <nav>
-            <h2>Weekly Planner</h2>
+            <h2>📅 Weekly Planner</h2>
 
             <ul>
                 <li><a href="{{ url_for('home') }}">Home</a></li>
-                <li><a href="{{ url_for('login') }}">Login</a></li>
+            {% if "user_id" in session %}
+                 <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                 <li class="Welcome">
+                    Welcome, {{ session["username"]}}
+                 </li>
+        {% else %}         
                 <li><a href="{{ url_for('register') }}">Register</a></li>
-                <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                <li><a href="{{ url_for('login') }}">Login</a></li>
+        {% endif %}
             </ul>
 
         </nav>
