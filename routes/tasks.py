@@ -17,6 +17,9 @@ tasks = Blueprint("tasks", __name__)
 @tasks.route("/dashboard")
 def dashboard():
 
+    if "user_id" not in session:
+        return redirect(url_for("auth.login"))
+
     total = get_total_tasks(session["user_id"])
     completed = get_completed_tasks(session["user_id"])
     tasks = get_tasks(session["user_id"])
@@ -40,7 +43,7 @@ def dashboard():
 def add_task_route():
 
     if "user_id" not in session:
-        return redirect(url_for("login"))
+        return redirect(url_for("auth.login"))
 
     if request.method == "POST":
 
@@ -57,7 +60,7 @@ def add_task_route():
             session["user_id"]
         )
 
-        return redirect(url_for("dashboard"))
+        return redirect(url_for("tasks.dashboard"))
 
     return render_template("add_task.html")
 
@@ -66,17 +69,17 @@ def add_task_route():
 def delete_task_route(task_id):
 
     if "user_id" not in session:
-        return redirect(url_for("login"))
+        return redirect(url_for("auth.login"))
 
     delete_task(task_id, session["user_id"])
 
-    return redirect(url_for("dashboard"))
+    return redirect(url_for("tasks.dashboard"))
 
 
 @tasks.route("/edit_task/<int:task_id>", methods=["GET", "POST"])
 def edit_task(task_id):
     if "user_id" not in session:
-        return redirect(url_for("login"))
+        return redirect(url_for("auth.login"))
     if request.method == "POST":
         title = request.form["title"]
         description = request.form["description"]
@@ -91,7 +94,7 @@ def edit_task(task_id):
             priority,
             session["user_id"]
         )
-        return redirect(url_for("dashboard"))
+        return redirect(url_for("tasks.dashboard"))
     task = get_task_by_id(task_id, session["user_id"])
     return render_template("edit_task.html", task=task)
 
@@ -99,6 +102,6 @@ def edit_task(task_id):
 @tasks.route("/complete_task/<int:task_id>")
 def complete_task_route(task_id):
     if "user_id" not in session:
-        return redirect(url_for("login"))
+        return redirect(url_for("auth.login"))
     complete_task(task_id, session["user_id"])
-    return redirect (url_for("dashboard"))
+    return redirect (url_for("tasks.dashboard"))

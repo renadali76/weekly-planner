@@ -20,7 +20,7 @@ def login():
         if check_password_hash(user["password"], password):
             session["user_id"] = user["id"]
             session["username"] = user["username"]
-            return redirect(url_for("dashboard"))
+            return redirect(url_for("tasks.dashboard"))
         
         return "Inccorect password."
     
@@ -40,7 +40,7 @@ def register():
         print(email)
         print(password)
         add_user(username, email, hashed_password)
-        return redirect(url_for("login"))
+        return redirect(url_for("auth.login"))
 
 
     return render_template("register.html")
