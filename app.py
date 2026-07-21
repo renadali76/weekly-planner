@@ -131,5 +131,10 @@ def complete_task_route(task_id):
     complete_task(task_id, session["user_id"])
     return redirect (url_for("dashboard"))
 
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("home"))
+
 if __name__ == "__main__":
     app.run(debug=True)
