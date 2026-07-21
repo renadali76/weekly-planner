@@ -9,43 +9,6 @@ app.secret_key = "BadooryisaDoctor!23"
 def home():
     return render_template("home.html")
 
-@app.route("/login", methods = ["GET", "POST"])
-def login():
-
-    if request.method == "POST":
-        email = request.form['email']
-        password = request.form['password']
-        user = get_user_by_email(email)
-
-        if user is None:
-            return "Email not found"
-        if check_password_hash(user["password"], password):
-            session["user_id"] = user["id"]
-            session["username"] = user["username"]
-            return redirect(url_for("dashboard"))
-        
-        return "Inccorect password."
-    
-    return render_template("login.html")
-
-@app.route("/register" , methods = ["GET" , "POST"])
-def register():
-    if request.method == "POST":
-        username = request.form["username"]
-        email = request.form["email"]
-
-        password = request.form["password"]
-        hashed_password = generate_password_hash(password)
-
-        print(username)
-        print(email)
-        print(password)
-        add_user(username, email, hashed_password)
-        return redirect(url_for("login"))
-
-
-    return render_template("register.html")
-
 @app.route("/dashboard")
 def dashboard():
 
@@ -131,10 +94,6 @@ def complete_task_route(task_id):
     complete_task(task_id, session["user_id"])
     return redirect (url_for("dashboard"))
 
-@app.route("/logout")
-def logout():
-    session.clear()
-    return redirect(url_for("home"))
 
 if __name__ == "__main__":
     app.run(debug=True)
