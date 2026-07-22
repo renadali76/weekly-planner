@@ -22,7 +22,16 @@ def dashboard():
 
     total = get_total_tasks(session["user_id"])
     completed = get_completed_tasks(session["user_id"])
-    tasks = get_tasks(session["user_id"])
+    search = request.args.get("search", "")
+    status = request.args.get("status", "")
+    priority = request.args.get("priority", "")
+
+    tasks = get_tasks(
+    session["user_id"],
+    search,
+    status,
+    priority
+    )
     progress = 0
 
     if total > 0:
