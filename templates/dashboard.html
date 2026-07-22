@@ -18,6 +18,58 @@
         </a>
 
     </div>
+    
+    <form method="GET" action="{{ url_for('tasks.dashboard') }}" class="search-form">
+
+        <input
+            type="text"
+            name="search"
+            placeholder="🔍 Search tasks..."
+            value="{{ search }}"
+        >
+    
+        <select name="status">
+    
+            <option value="">All Status</option>
+    
+            <option value="Pending"
+                {% if status == "Pending" %}selected{% endif %}>
+                Pending
+            </option>
+    
+            <option value="Completed"
+                {% if status == "Completed" %}selected{% endif %}>
+                Completed
+            </option>
+    
+        </select>
+    
+        <select name="priority">
+    
+            <option value="">All Priorities</option>
+    
+            <option value="High"
+                {% if priority == "High" %}selected{% endif %}>
+                High
+            </option>
+    
+            <option value="Medium"
+                {% if priority == "Medium" %}selected{% endif %}>
+                Medium
+            </option>
+    
+            <option value="Low"
+                {% if priority == "Low" %}selected{% endif %}>
+                Low
+            </option>
+    
+        </select>
+    
+        <button type="submit">
+            Search
+        </button>
+    
+    </form>
 
     <h2>Today's Progress</h2>
 
