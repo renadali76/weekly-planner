@@ -25,12 +25,13 @@ def dashboard():
     search = request.args.get("search", "")
     status = request.args.get("status", "")
     priority = request.args.get("priority", "")
-
+    sort = request.args.get("sort", "due_date")
     tasks = get_tasks(
     session["user_id"],
     search,
     status,
-    priority
+    priority,
+    sort
     )
     progress = 0
 
@@ -44,7 +45,8 @@ def dashboard():
     tasks=tasks,
     total=total,
     completed=completed,
-    progress=progress
+    progress=progress,
+    sort=sort
 )
 
 

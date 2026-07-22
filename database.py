@@ -70,7 +70,7 @@ def add_task(title, description, due_date, priority, user_id):
     connection.close()
 
 
-def get_tasks(user_id, search="", status="", priority=""):
+def get_tasks(user_id, search="", status="", priority="", sort="due_date"):
     connection = sqlite3.connect("planner.db")
     connection.row_factory = sqlite3.Row
     cursor = connection.cursor()
@@ -101,13 +101,40 @@ def get_tasks(user_id, search="", status="", priority=""):
         query += " AND priority = ?"
         parameters.append(priority)
 
-    query += " ORDER BY due_date"
+    if sort == "priority_high":
+        query += """
+        ORDER BY
+            CASE priority
+                WHEN 'High' THEN 1
+                WHEN 'Medium' THEN 2
+                WHEN 'Low' THEN 3
+            END
+        """
 
-    cursor.execute(query, parameters)
+    elif sort == "priority_low":
+        query += """
+        ORDER BY
+            CASE priority
+                WHEN 'Low' THEN 1
+                WHEN 'Medium' THEN 2
+                WHEN 'High' THEN 3
+            END
+        """
 
-    tasks = cursor.fetchall()
-    connection.close()
-    return tasks
+    elif sort == "title":
+        query += " ORDER BY title ASC"
+
+    elif sort == "title_desc":
+        query += " ORDER BY title DESC"
+
+    else:
+        query += " ORDER BY due_date ASC"
+
+        cursor.execute(query, parameters)
+
+        tasks = cursor.fetchall()
+        connection.close()
+        return tasks
 
 
 def delete_task(task_id, user_id):

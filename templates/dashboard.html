@@ -18,7 +18,7 @@
         </a>
 
     </div>
-    
+
     <form method="GET" action="{{ url_for('tasks.dashboard') }}" class="search-form">
 
         <input
@@ -41,6 +41,11 @@
                 {% if status == "Completed" %}selected{% endif %}>
                 Completed
             </option>
+
+            <option value="Not Started"
+                {% if status == "Not Started" %}selected{% endif %}>
+                Not Started
+            </option>
     
         </select>
     
@@ -62,9 +67,37 @@
                 {% if priority == "Low" %}selected{% endif %}>
                 Low
             </option>
-    
         </select>
     
+        <select name="sort">
+
+            <option value="due_date"
+                {% if sort == "due_date" %}selected{% endif %}>
+                Due Date
+            </option>
+        
+            <option value="priority_high"
+                {% if sort == "priority_high" %}selected{% endif %}>
+                Priority (High → Low)
+            </option>
+        
+            <option value="priority_low"
+                {% if sort == "priority_low" %}selected{% endif %}>
+                Priority (Low → High)
+            </option>
+        
+            <option value="title"
+                {% if sort == "title" %}selected{% endif %}>
+                Title (A-Z)
+            </option>
+        
+            <option value="title_desc"
+                {% if sort == "title_desc" %}selected{% endif %}>
+                Title (Z-A)
+            </option>
+        
+        </select>
+        
         <button type="submit">
             Search
         </button>
